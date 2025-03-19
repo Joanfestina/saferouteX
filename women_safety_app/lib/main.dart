@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import './ui/screens/home_scren.dart';
+// import './ui/screens/map_screen.dart';
+import './ui/screens/report_screen.dart';
 
 void main() {
   runApp(const SafeRouteXApp());
@@ -36,7 +38,7 @@ class _MainScreenState extends State<MainScreen> {
     const HomeScreen(),
     // const MapScreen(),
     // const SosScreen(),
-    // const ReportScreen(),
+    const ReportScreen(),
     // const ResourcesScreen(),
   ];
 
@@ -58,7 +60,7 @@ class _MainScreenState extends State<MainScreen> {
         showUnselectedLabels: true,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Map'),
+          // BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Map'),
           BottomNavigationBarItem(icon: Icon(Icons.sos), label: 'SOS'),
           BottomNavigationBarItem(icon: Icon(Icons.report), label: 'Report'),
           BottomNavigationBarItem(icon: Icon(Icons.library_books), label: 'Resources'),
