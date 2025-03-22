@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../services/auth_service.dart'; // Import the AuthService
-import './home_scren.dart'; // Corrected import
-// import './authority_screen.dart'; // Removed import
+import './home_scren.dart'; // Import HomeScreen
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,33 +11,36 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final AuthService _authService = AuthService();
   String _selectedRole = 'User'; // Default role
 
-  // Email/Password Login
-  Future<void> _loginWithEmailPassword() async {
-    User? user = await _authService.signInWithEmailPassword(
-      _emailController.text.trim(),
-      _passwordController.text.trim(),
-    );
+  // Static Credentials
+  final Map<String, String> staticCredentials = {
+    'user@saferoutex.com': 'user12345',
+    'authority@saferoutex.com': 'authority12345',
+  };
 
-    if (user != null) {
-      String? role = await _authService.getUserRole(user.uid);
-      if (role != null) {
-        print("User role: $role");
-        if (role == 'User') {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
-          );
-        } else {
-          _showError("Invalid role.");
-        }
+  // Login Logic for Static Credentials
+  void _loginWithEmailPassword() {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      _showError("Email and password cannot be empty.");
+      return;
+    }
+
+    if (staticCredentials[email] == password) {
+      if ((_selectedRole == 'User' && email == 'user@saferoutex.com') ||
+          (_selectedRole == 'Authority' && email == 'authority@saferoutex.com')) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()), // Navigate to HomeScreen
+        );
       } else {
-        _showError("Failed to fetch user role.");
+        _showError("Selected role does not match your email.");
       }
     } else {
-      _showError("Login failed. Please check your email and password.");
+      _showError("Invalid email or password.");
     }
   }
 

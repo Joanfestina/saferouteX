@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './ui/screens/home_scren.dart'; // Corrected typo
+import './ui/screens/home_scren.dart'; // Corrected import
 import './ui/screens/sos_screen.dart';
 import './ui/screens/report_screen.dart';
 import './ui/screens/resources.dart';
@@ -12,7 +12,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
     await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform, // Ensure correct options
+      options: DefaultFirebaseOptions.currentPlatform,
     );
   } catch (e) {
     debugPrint("Firebase initialization error: $e");
@@ -31,7 +31,6 @@ class SafeRouteXApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      // Show LoginScreen if user is not authenticated, else MainScreen
       home: FirebaseAuth.instance.currentUser == null 
           ? const LoginScreen() 
           : const MainScreen(),
@@ -65,7 +64,12 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("MainScreen is loaded!"); // Debugging check
+
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('SafeRouteX'),
+      ),
       body: IndexedStack(
         index: _selectedIndex,
         children: _screens,
