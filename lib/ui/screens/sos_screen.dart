@@ -1,36 +1,3 @@
-// import 'package:flutter/material.dart';
-
-// class SosScreen extends StatelessWidget {
-//   const SosScreen({super.key});
-
-//   void _triggerSOS(BuildContext context) {
-//     // Add SOS logic here (e.g., send alert, notify contacts)
-//     ScaffoldMessenger.of(context).showSnackBar(
-//       const SnackBar(
-//         content: Text('⚠️ SOS Alert Triggered! Help is on the way.'),
-//         backgroundColor: Colors.red,
-//         duration: Duration(seconds: 3),
-//       ),
-//     );
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('SOS Alert', style: TextStyle(fontWeight: FontWeight.bold)),
-//         centerTitle: true,
-//         backgroundColor: Colors.redAccent,
-//       ),
-//       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             const Text(
-//               'Emergency Assistance',
-//               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-//             ),
-//             const SizedBox(height: 10),
 import 'package:flutter/material.dart';
 
 class SosScreen extends StatelessWidget {
@@ -63,6 +30,7 @@ class SosScreen extends StatelessWidget {
                   const SnackBar(
                     content: Text('SOS Triggered! Help is on the way.'),
                     backgroundColor: Colors.red,
+                    duration: Duration(seconds: 3),
                   ),
                 );
               },

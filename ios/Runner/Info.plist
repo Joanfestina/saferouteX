@@ -45,5 +45,15 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need your location to show nearby safe zones.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>We need your location to show nearby safe zones.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>We need your location to show nearby safe zones.</string>
+	<key>GMSApiKey</key>
+	<string>5b3ce3597851110001cf6248e6f0d7a9445048aaae45fdae37beacee</string> <!-- Replace with your actual API key -->
 </dict>
 </plist>

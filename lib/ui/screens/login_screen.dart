@@ -34,7 +34,9 @@ class _LoginScreenState extends State<LoginScreen> {
           (_selectedRole == 'Authority' && email == 'authority@saferoutex.com')) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()), // Navigate to HomeScreen
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(userType: _selectedRole.toLowerCase()), // Pass userType to HomeScreen
+          ),
         );
       } else {
         _showError("Selected role does not match your email.");

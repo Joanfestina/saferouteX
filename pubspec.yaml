@@ -2,7 +2,7 @@ name: women_safety_app
 description: "A new Flutter project."
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 1.0.0+1r
 
 environment:
   sdk: ^3.7.2
@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  google_maps_flutter: ^2.5.0
+  google_maps_flutter: ^2.1.1
   firebase_auth: ^5.5.1
   firebase_auth_web: ^5.0.0
   google_sign_in: ^6.1.5

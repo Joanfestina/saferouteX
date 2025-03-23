@@ -17,11 +17,17 @@ void main() async {
   } catch (e) {
     debugPrint("Firebase initialization error: $e");
   }
-  runApp(const SafeRouteXApp());
+
+  // Simulated userType variable
+  String userType = 'user'; // Change this to 'authority' to simulate authority user
+
+  runApp(SafeRouteXApp(userType: userType));
 }
 
 class SafeRouteXApp extends StatelessWidget {
-  const SafeRouteXApp({super.key});
+  final String userType; // Add userType parameter
+
+  const SafeRouteXApp({super.key, required this.userType}); // Make userType required
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +39,7 @@ class SafeRouteXApp extends StatelessWidget {
       ),
       home: FirebaseAuth.instance.currentUser == null 
           ? const LoginScreen() 
-          : const MainScreen(),
+          : HomeScreen(userType: userType), // Pass userType to HomeScreen
       debugShowCheckedModeBanner: false,
     );
   }
@@ -50,7 +56,7 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
   static final List<Widget> _screens = [
-    const HomeScreen(),
+    const HomeScreen(userType: 'user'), // Pass userType to HomeScreen
     const ReportScreen(),
     const SosScreen(),
     const ResourcesScreen(),

@@ -39,6 +39,7 @@ class _MapScreenState extends State<MapScreen> {
             ),
           ),
         },
+        mapType: MapType.normal, // Ensure mapType is set
       ),
     );
   }
