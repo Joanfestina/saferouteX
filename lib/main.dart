@@ -7,6 +7,7 @@ import './ui/screens/login_screen.dart'; // Added Login Screen
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart'; // Import Firebase options
+import './ui/screens/map_screen.dart'; // Ensure this is for Flutter Map, not Google Maps
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -60,6 +61,7 @@ class _MainScreenState extends State<MainScreen> {
     const ReportScreen(),
     const SosScreen(),
     const ResourcesScreen(),
+    const MapScreen(), // Ensure this uses Flutter Map
   ];
 
   void _onItemTapped(int index) {
@@ -89,6 +91,7 @@ class _MainScreenState extends State<MainScreen> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.report), label: 'Report'),
+          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'map'),
           BottomNavigationBarItem(icon: Icon(Icons.sos), label: 'SOS'),
           BottomNavigationBarItem(icon: Icon(Icons.library_books), label: 'Resources'),
         ],

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'map_screen.dart';
 import 'sos_screen.dart';
 import 'report_screen.dart';
 import 'resources.dart';
