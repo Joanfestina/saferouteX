@@ -2,7 +2,7 @@ name: women_safety_app
 description: "A new Flutter project."
 publish_to: 'none'
 
-version: 1.0.0+1r
+version: 1.0.0+1
 
 environment:
   sdk: ^3.7.2
@@ -18,9 +18,11 @@ dependencies:
   cloud_firestore: ^5.6.5
   flutter_map: ^5.0.0
   latlong2: ^0.9.0
+  flutter_map_marker_popup: ^5.2.0
 
   cupertino_icons: ^1.0.8
-  geolocator: ^13.0.3
+  geolocator: ^10.0.0
+  geocoding: ^3.0.0
 
 dev_dependencies:
   flutter_test:
