@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:latlong2/latlong.dart';
+import '../../services/route_service.dart';
 
 class RouteSuggestionScreen extends StatelessWidget {
   const RouteSuggestionScreen({super.key});
@@ -39,26 +41,82 @@ class RouteSuggestionScreen extends StatelessWidget {
   }
 
   void _suggestRoute(BuildContext context, String userId) {
-    final TextEditingController routeController = TextEditingController();
+    final TextEditingController startController = TextEditingController();
+    final TextEditingController destinationController = TextEditingController();
+    final RouteService _routeService = RouteService();
 
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: const Text('Suggest Route'),
-          content: TextField(
-            controller: routeController,
-            decoration: const InputDecoration(labelText: 'Route'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: startController,
+                decoration: const InputDecoration(labelText: 'Start Location'),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: destinationController,
+                decoration: const InputDecoration(labelText: 'Destination'),
+              ),
+            ],
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                FirebaseFirestore.instance.collection('route_suggestions').add({
-                  'user_id': userId,
-                  'route': routeController.text,
-                  'suggested_at': Timestamp.now(),
-                });
-                Navigator.of(context).pop();
+              onPressed: () async {
+                final startCoords = await _routeService.getCoordinatesFromAddress(
+                    startController.text.trim());
+                final endCoords = await _routeService.getCoordinatesFromAddress(
+                    destinationController.text.trim());
+
+                if (startCoords == null || endCoords == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text("Invalid locations. Please try again.")),
+                  );
+                  return;
+                }
+
+                try {
+                  final routePoints =
+                      await _routeService.getRoute(startCoords, endCoords);
+
+                  await FirebaseFirestore.instance
+                      .collection('route_suggestions')
+                      .add({
+                    'user_id': userId,
+                    'start_location': {
+                      'lat': startCoords.latitude,
+                      'lng': startCoords.longitude,
+                    },
+                    'destination': {
+                      'lat': endCoords.latitude,
+                      'lng': endCoords.longitude,
+                    },
+                    'route_points': routePoints
+                        .map((point) => {
+                              'lat': point.latitude,
+                              'lng': point.longitude
+                            })
+                        .toList(),
+                    'suggested_at': Timestamp.now(),
+                  });
+
+                  Navigator.of(context).pop();
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text("Route successfully suggested!")),
+                  );
+                } catch (e) {
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Error suggesting route: $e")),
+                  );
+                }
               },
               child: const Text('Submit'),
             ),
