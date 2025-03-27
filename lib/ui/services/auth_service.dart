@@ -29,4 +29,31 @@ class AuthService {
       return null;
     }
   }
+
+  // Sign up with email and password
+  Future<String?> signUpWithEmailPassword(String name, String email, String password) async {
+    try {
+      // Create user in Firebase Authentication
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // Get the user's UID
+      String uid = userCredential.user!.uid;
+
+      // Store user details in Firestore
+      await _firestore.collection('users').doc(uid).set({
+        'name': name,
+        'email': email,
+        'role': 'user', // Default role
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      return "User registered successfully!";
+    } catch (e) {
+      print("Sign-up error: $e");
+      return "Error: ${e.toString()}";
+    }
+  }
 }

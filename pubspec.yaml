@@ -20,10 +20,11 @@ dependencies:
   latlong2: ^0.9.0
   flutter_map_marker_popup: ^5.2.0
   firebase_storage: ^12.4.4
-
+  file_picker: ^8.0.0
   cupertino_icons: ^1.0.8
   geolocator: ^10.0.0
   geocoding: ^3.0.0
+  image_picker: ^0.8.7+4
 
 dev_dependencies:
   flutter_test:
