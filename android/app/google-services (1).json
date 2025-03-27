@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "197515958191",
+    "project_id": "saferoutex-07",
+    "storage_bucket": "saferoutex-07.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:197515958191:android:0acdad8dcbec38deadc15a",
+        "android_client_info": {
+          "package_name": "com.example.women_safety_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "197515958191-7t69ga2k83667b963u4qntn82c48ducs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbjUetJltMZIxzgQVR19gtrn07eiZ_wks"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "197515958191-7t69ga2k83667b963u4qntn82c48ducs.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "197515958191-0jp0ijm4ouapgkt3nlqgiactgni9lo2c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.womenSafetyApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
