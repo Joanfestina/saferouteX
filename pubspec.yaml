@@ -23,6 +23,7 @@ dependencies:
   firebase_storage: ^12.4.4
   file_picker: ^8.0.0
   cupertino_icons: ^1.0.8
+  permission_handler: ^11.0.0
 
   geolocator: ^10.0.0
   geocoding: ^3.0.0
