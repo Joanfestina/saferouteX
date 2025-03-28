@@ -60,7 +60,7 @@ class _MainScreenState extends State<MainScreen> {
     const HomeScreen(userType: 'user'), // Pass userType to HomeScreen
     const ReportScreen(),
     const SosScreen(),
-    const ResourcesScreen(),
+    ResourcesScreen(),
     const MapScreen(), // Ensure this uses Flutter Map
   ];
 

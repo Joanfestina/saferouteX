@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:women_safety_app/ui/screens/resources.dart';
 import 'sos_screen.dart';
 import 'report_screen.dart';
-import 'resources.dart';
 import 'dashboard/user_dashboard.dart'; // Import UserDashboard
 import 'dashboard/authority_dashboard.dart'; // Import AuthorityDashboard
 
@@ -27,13 +27,13 @@ class _HomeScreenState extends State<HomeScreen> {
             const UserDashboard(),
             const ReportScreen(),
             const SosScreen(),
-            const ResourcesScreen(),
+            ResourcesScreen(),
           ]
         : [
             const AuthorityDashboard(),
             const ReportScreen(),
             const SosScreen(),
-            const ResourcesScreen(),
+            ResourcesScreen(),
           ];
   }
 
