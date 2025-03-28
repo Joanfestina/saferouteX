@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:latlong2/latlong.dart';
-import '../services/constants.dart';
+import 'constants.dart';
 
 class RouteService {
   final String apiKey = ORS_API_KEY;

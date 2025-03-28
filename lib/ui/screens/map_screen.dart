@@ -234,9 +234,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
-import '../../services/location_service.dart';
-import '../../services/route_service.dart';
-import '../../services/constants.dart';
+import '../services/location_service.dart';
+import '../services/route_service.dart';
+import '../services/constants.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});

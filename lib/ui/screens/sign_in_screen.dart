@@ -14,16 +14,24 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _contactController = TextEditingController();
   final TextEditingController _trustedContactController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
   final AuthService _authService = AuthService(); // Initialize AuthService
 
   void _registerUser() async {
     String name = _nameController.text.trim();
     String email = _emailController.text.trim();
-    String password = _contactController.text.trim(); // Use as password for now
+    String password = _passwordController.text.trim();
+    String confirmPassword = _confirmPasswordController.text.trim();
 
-    if (name.isEmpty || email.isEmpty || password.isEmpty) {
+    if (name.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
       _showError("All fields are required.");
+      return;
+    }
+
+    if (password != confirmPassword) {
+      _showError("Passwords do not match.");
       return;
     }
 
@@ -118,6 +126,26 @@ class _SignInScreenState extends State<SignInScreen> {
                       decoration: InputDecoration(
                         labelText: 'Trusted Person’s Phone Number',
                         prefixIcon: const Icon(Icons.security),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: _passwordController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        prefixIcon: const Icon(Icons.lock),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: _confirmPasswordController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: 'Confirm Password',
+                        prefixIcon: const Icon(Icons.lock_outline),
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                       ),
                     ),
