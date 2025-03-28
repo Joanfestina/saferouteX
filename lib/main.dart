@@ -99,3 +99,16 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 }
+// Navigator.push(
+//   context,
+//   MaterialPageRoute(builder: (context) => const AuthReportScreen()),
+// );
+
+// If needed, move this code into a valid method or function, such as:
+// void navigateToAuthReportScreen(BuildContext context) {
+//   Navigator.push(
+//     context,
+//     MaterialPageRoute(builder: (context) => const AuthReportScreen()),
+//   );
+// }
+

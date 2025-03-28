@@ -1,235 +1,3 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter_map/flutter_map.dart';
-// import 'package:flutter_map_marker_popup/flutter_map_marker_popup.dart';
-// import 'package:geocoding/geocoding.dart';
-// import 'package:geolocator/geolocator.dart';
-// import 'package:latlong2/latlong.dart';
-// import 'dart:io'; // Add this import
-// import '../../services/location_service.dart';
-// import '../../services/constants.dart';
-
-// class MapScreen extends StatefulWidget {
-//   const MapScreen({super.key});
-
-//   @override
-//   State<MapScreen> createState() => _MapScreenState();
-// }
-
-// class _MapScreenState extends State<MapScreen> {
-//   late LocationService _locationService;
-//   final MapController _mapController = MapController(); // Add this line
-
-//   LatLng _currentPosition = LatLng(37.7749, -122.4194); // Initial position (San Francisco)
-//   LatLng? _destinationPosition;
-//   bool _locationFetched = false;
-//   bool _isLoading = false; // Loading indicator state
-
-//   final TextEditingController _destinationController = TextEditingController();
-
-//   List<LatLng> _routePoints = []; // List to store route points
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _locationService = LocationService();
-//     _getCurrentLocation();
-//   }
-
-//   // Function to fetch the user's current location
-//   Future<void> _getCurrentLocation() async {
-//     try {
-//       Position position = await _locationService.getCurrentLocation();
-//       setState(() {
-//         _currentPosition = LatLng(position.latitude, position.longitude);
-//         _locationFetched = true;
-//       });
-//     } catch (e) {
-//       print("Error fetching location: $e");
-//     }
-//   }
-
-//   // Function to find the destination's coordinates and draw a route
-//   Future<void> _setDestination(String destination) async {
-//     if (destination.trim().isEmpty) {
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         const SnackBar(content: Text("Please enter a valid destination.")),
-//       );
-//       return;
-//     }
-
-//     setState(() {
-//       _isLoading = true; // Show loading indicator
-//     });
-
-//     try {
-//       List<Location> locations = await locationFromAddress(destination);
-//       if (locations.isNotEmpty) {
-//         final LatLng destinationLatLng = LatLng(
-//           locations.first.latitude,
-//           locations.first.longitude,
-//         );
-
-//         setState(() {
-//           _destinationPosition = destinationLatLng;
-//           _routePoints = [
-//             _currentPosition, // Starting point
-//             _destinationPosition!, // Destination point
-//           ];
-//         });
-
-//         // Debug print to confirm destination coordinates
-//         print("Destination coordinates: $_destinationPosition");
-
-//         // Move the map to the destination
-//         final mapController = MapController(); // Ensure you have a MapController instance
-//         mapController.move(_destinationPosition!, 15.0); // Zoom level 15.0
-//       } else {
-//         ScaffoldMessenger.of(context).showSnackBar(
-//           const SnackBar(content: Text("Destination not found. Please check the address format.")),
-//         );
-//       }
-//     } on SocketException {
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         const SnackBar(content: Text("No internet connection. Please try again later.")),
-//       );
-//     } on Exception catch (e) {
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         SnackBar(content: Text("An error occurred: $e")),
-//       );
-//     } finally {
-//       setState(() {
-//         _isLoading = false; // Hide loading indicator
-//       });
-//     }
-//   }
-
-//   // Function to draw a route between current location and destination
-//   void _drawRoute() {
-//     if (_destinationPosition != null) {
-//       setState(() {
-//         _routePoints = [
-//           _currentPosition, // Starting point
-//           _destinationPosition!, // Destination point
-//         ];
-//       });
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Safety Map'),
-//       ),
-//       body: Column(
-//         children: [
-//           // Current Location Bar with clickable icon
-//           Padding(
-//             padding: const EdgeInsets.all(8.0),
-//             child: TextFormField(
-//               readOnly: true,
-//               decoration: InputDecoration(
-//                 labelText: 'Current Location',
-//                 prefixIcon: IconButton(
-//                   icon: const Icon(Icons.my_location),
-//                   onPressed: _getCurrentLocation,
-//                 ),
-//                 border: OutlineInputBorder(),
-//                 filled: true,
-//                 fillColor: Colors.blue.shade50,
-//               ),
-//               controller: TextEditingController(
-//                 text: "${_currentPosition.latitude}, ${_currentPosition.longitude}",
-//               ),
-//             ),
-//           ),
-
-//           // Destination Search Bar
-//           Padding(
-//             padding: const EdgeInsets.all(8.0),
-//             child: TextFormField(
-//               controller: _destinationController,
-//               decoration: InputDecoration(
-//                 labelText: 'Enter Destination',
-//                 prefixIcon: const Icon(Icons.location_on),
-//                 suffixIcon: IconButton(
-//                   icon: const Icon(Icons.search),
-//                   onPressed: () => _setDestination(_destinationController.text),
-//                 ),
-//                 border: OutlineInputBorder(),
-//                 filled: true,
-//                 fillColor: Colors.white,
-//               ),
-//             ),
-//           ),
-
-//           // Loading indicator
-//           if (_isLoading)
-//             const Center(child: CircularProgressIndicator()),
-
-//           // Map Section
-//           Expanded(
-//             child: _locationFetched
-//                 ? FlutterMap(
-//                     options: MapOptions(
-//                       center: _currentPosition,
-//                       zoom: 12.0,
-//                     ),
-//                     children: [
-//                       TileLayer(
-//                         urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-//                         subdomains: ['a', 'b', 'c'],
-//                       ),
-
-//                       // Current Location Marker
-//                       MarkerLayer(
-//                         markers: [
-//                           Marker(
-//                             width: 80.0,
-//                             height: 80.0,
-//                             point: _currentPosition,
-//                             builder: (ctx) => const Icon(
-//                               Icons.my_location,
-//                               color: Colors.blue,
-//                               size: 40,
-//                             ),
-//                           ),
-
-//                           // Destination Marker
-//                           if (_destinationPosition != null)
-//                             Marker(
-//                               width: 80.0,
-//                               height: 80.0,
-//                               point: _destinationPosition!,
-//                               builder: (ctx) => const Icon(
-//                                 Icons.location_on,
-//                                 color: Colors.red,
-//                                 size: 40,
-//                               ),
-//                             ),
-//                         ],
-//                       ),
-
-//                       // Route Display
-//                       if (_routePoints.isNotEmpty)
-//                         PolylineLayer(
-//                           polylines: [
-//                             Polyline(
-//                               points: _routePoints,
-//                               color: Colors.blue,
-//                               strokeWidth: 4.0,
-//                             ),
-//                           ],
-//                         ),
-//                     ],
-//                   )
-//                 : const Center(child: CircularProgressIndicator()),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
@@ -247,14 +15,19 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   late LocationService _locationService;
-  late RouteService _routeService;  // Added RouteService instance
+  late RouteService _routeService;  
   final MapController _mapController = MapController();
 
   LatLng _currentPosition = LatLng(37.7749, -122.4194);
   LatLng? _destinationPosition;
-  List<LatLng> _routePoints = [];
+  
+  List<Polyline> _safeRoutePolylines = [];
+  List<Polyline> _unsafeRoutePolylines = [];
+
   bool _locationFetched = false;
   bool _isLoading = false;
+
+  String _travelDuration = ""; // Travel duration state
 
   final TextEditingController _destinationController = TextEditingController();
 
@@ -286,23 +59,25 @@ class _MapScreenState extends State<MapScreen> {
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     try {
       final LatLng? destinationLatLng =
           await _routeService.getCoordinatesFromAddress(destination);
 
       if (destinationLatLng != null) {
-        final routePoints =
-            await _routeService.getRoute(_currentPosition, destinationLatLng);
+        final routeData = await _routeService.getRouteWithDuration(
+          _currentPosition,
+          destinationLatLng,
+        );
 
         setState(() {
           _destinationPosition = destinationLatLng;
-          _routePoints = routePoints;
+          _safeRoutePolylines = routeData['polylines']; // Green polylines
+          _travelDuration = routeData['duration']; // Travel duration
         });
 
+        // Move the map to the destination
         _mapController.move(_destinationPosition!, 15.0);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -314,9 +89,7 @@ class _MapScreenState extends State<MapScreen> {
         SnackBar(content: Text("Error: $e")),
       );
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      setState(() => _isLoading = false);
     }
   }
 
@@ -324,103 +97,159 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Safety Map')),
-      body: Column(
+      body: Stack(
         children: [
-          // Current Location Display
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextFormField(
-              readOnly: true,
-              decoration: InputDecoration(
-                labelText: 'Current Location',
-                prefixIcon: const Icon(Icons.my_location),
-                border: const OutlineInputBorder(),
-                filled: true,
-                fillColor: Colors.blue.shade50,
-              ),
-              controller: TextEditingController(
-                text: "${_currentPosition.latitude}, ${_currentPosition.longitude}",
-              ),
-            ),
-          ),
-
-          // Destination Search Bar
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextFormField(
-              controller: _destinationController,
-              decoration: InputDecoration(
-                labelText: 'Enter Destination',
-                prefixIcon: const Icon(Icons.location_on),
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: () => _setDestination(_destinationController.text),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    labelText: 'Current Location',
+                    prefixIcon: const Icon(Icons.my_location),
+                    border: const OutlineInputBorder(),
+                    filled: true,
+                    fillColor: const Color.fromARGB(255, 228, 253, 227),
+                  ),
+                  controller: TextEditingController(
+                    text:
+                        "${_currentPosition.latitude}, ${_currentPosition.longitude}",
+                  ),
                 ),
-                border: const OutlineInputBorder(),
-                filled: true,
-                fillColor: Colors.white,
               ),
-            ),
-          ),
 
-          // Loading Indicator
-          if (_isLoading) const Center(child: CircularProgressIndicator()),
-
-          // Map Display
-          Expanded(
-            child: _locationFetched
-                ? FlutterMap(
-                    mapController: _mapController,
-                    options: MapOptions(
-                      center: _currentPosition,
-                      zoom: 12.0,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: _destinationController,
+                  decoration: InputDecoration(
+                    labelText: 'Enter Destination',
+                    prefixIcon: const Icon(Icons.location_on),
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.search),
+                      onPressed: () => _setDestination(_destinationController.text),
                     ),
-                    children: [
-                      TileLayer(
-                        urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                        subdomains: ['a', 'b', 'c'],
-                      ),
+                    border: const OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                ),
+              ),
 
-                      // Current Location Marker
-                      MarkerLayer(
-                        markers: [
-                          Marker(
-                            point: _currentPosition,
-                            builder: (ctx) => const Icon(
-                              Icons.my_location,
-                              color: Colors.blue,
-                              size: 40,
-                            ),
+              if (_isLoading) const Center(child: CircularProgressIndicator()),
+
+              Expanded(
+                child: _locationFetched
+                    ? FlutterMap(
+                        mapController: _mapController,
+                        options: MapOptions(
+                          center: _currentPosition,
+                          zoom: 12.0,
+                        ),
+                        children: [
+                          TileLayer(
+                            urlTemplate:
+                                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                            subdomains: ['a', 'b', 'c'],
                           ),
 
-                          // Destination Marker
-                          if (_destinationPosition != null)
-                            Marker(
-                              point: _destinationPosition!,
-                              builder: (ctx) => const Icon(
-                                Icons.location_on,
-                                color: Colors.red,
-                                size: 40,
+                          MarkerLayer(
+                            markers: [
+                              Marker(
+                                point: _currentPosition,
+                                builder: (ctx) => const Icon(
+                                  Icons.my_location,
+                                  color: Colors.blue,
+                                  size: 40,
+                                ),
                               ),
-                            ),
-                        ],
-                      ),
 
-                      // Route Polyline (Red Route Line)
-                      if (_routePoints.isNotEmpty)
-                        PolylineLayer(
-                          polylines: [
-                            Polyline(
-                              points: _routePoints,
-                              color: Colors.red,
-                              strokeWidth: 4.0,
-                            ),
-                          ],
-                        ),
-                    ],
-                  )
-                : const Center(child: CircularProgressIndicator()),
+                              if (_destinationPosition != null)
+                                Marker(
+                                  point: _destinationPosition!,
+                                  builder: (ctx) => const Icon(
+                                    Icons.location_on,
+                                    color: Colors.red,
+                                    size: 40,
+                                  ),
+                                ),
+                            ],
+                          ),
+
+                          // Safe and Unsafe Routes Display
+                          PolylineLayer(
+                            polylines: [
+                              ..._safeRoutePolylines,   // Safe route (Green)
+                              ..._unsafeRoutePolylines, // Unsafe route (Red)
+                            ],
+                          ),
+                        ],
+                      )
+                    : const Center(child: CircularProgressIndicator()),
+              ),
+            ],
           ),
+          if (_travelDuration.isNotEmpty)
+            Positioned(
+              bottom: 16,
+              right: 16,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  // SOS Button
+                  ElevatedButton(
+                    onPressed: () {
+                      // Add SOS functionality here
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("SOS button pressed!")),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red, // Red color for SOS button
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 12.0,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                    child: const Text(
+                      "SOS",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8.0), // Spacing between SOS and duration
+                  // Duration Display
+                  Container(
+                    padding: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 4.0,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      "Duration: $_travelDuration",
+                      style: const TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
         ],
       ),
     );

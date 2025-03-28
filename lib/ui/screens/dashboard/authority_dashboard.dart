@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:women_safety_app/ui/screens/auth_report_screen.dart';
 import '../report_screen.dart';
 import '../sos_alerts_screen.dart'; // Import SosAlertsScreen
 import '../route_suggestion_screen.dart'; // Import RouteSuggestionScreen
@@ -23,7 +24,7 @@ class AuthorityDashboard extends StatelessWidget {
             Icons.assignment,
             () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const ReportScreen()),
+              MaterialPageRoute(builder: (context) => const AuthReportScreen()),
             ),
           ),
           _buildCard(
