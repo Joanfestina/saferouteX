@@ -2,6 +2,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:latlong2/latlong.dart';
 import 'constants.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map/plugin_api.dart';
 
 class RouteService {
   final String apiKey = ORS_API_KEY;
@@ -134,7 +137,6 @@ class MapWidget extends StatelessWidget {
   }
 }
 
-// filepath: d:\saferouteX\lib\services\route_service.dart
 class RouteSuggestionScreen extends StatelessWidget {
   const RouteSuggestionScreen({Key? key}) : super(key: key);
 
