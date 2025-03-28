@@ -1,55 +1,6 @@
-// import 'package:flutter/material.dart';
-
-// class ReportScreen extends StatelessWidget {
-//   const ReportScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text('Report Incident')),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             const Text('Report an Incident',
-//                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-//             const SizedBox(height: 10),
-//             TextField(
-//               decoration: InputDecoration(
-//                 labelText: 'Title',
-//                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-//               ),
-//             ),
-//             const SizedBox(height: 10),
-//             TextField(
-//               maxLines: 5,
-//               decoration: InputDecoration(
-//                 labelText: 'Description',
-//                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-//               ),
-//             ),
-//             const SizedBox(height: 20),
-//             ElevatedButton(
-//               onPressed: () {
-//                 ScaffoldMessenger.of(context).showSnackBar(
-//                   const SnackBar(content: Text('Report Submitted Successfully')),
-//                 );
-//               },
-//               style: ElevatedButton.styleFrom(
-//                 backgroundColor: Colors.redAccent,
-//                 foregroundColor: Colors.white,
-//                 padding: const EdgeInsets.symmetric(vertical: 16),
-//               ),
-//               child: const Text('Submit Report'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
@@ -57,17 +8,81 @@ class ReportScreen extends StatefulWidget {
   const ReportScreen({super.key});
 
   @override
-  _ReportScreenState createState() => _ReportScreenState();
+  State<ReportScreen> createState() => _ReportScreenState();
 }
 
 class _ReportScreenState extends State<ReportScreen> {
-  File? _image;
+  final _titleController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  File? _selectedImage;
+  bool _isSubmitting = false;
 
   Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
     if (pickedFile != null) {
       setState(() {
-        _image = File(pickedFile.path);
+        _selectedImage = File(pickedFile.path);
+      });
+    }
+  }
+
+  Future<String?> _uploadPhoto(File image) async {
+    try {
+      final storageRef = FirebaseStorage.instance
+          .ref()
+          .child('incident_photos/${DateTime.now().millisecondsSinceEpoch}.jpg');
+      final uploadTask = storageRef.putFile(image);
+      final snapshot = await uploadTask.whenComplete(() => {});
+      return await snapshot.ref.getDownloadURL();
+    } catch (e) {
+      print('Error uploading photo: $e');
+      return null;
+    }
+  }
+
+  Future<void> _submitReport() async {
+    if (_titleController.text.isEmpty || _descriptionController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Title and Description are required')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    String? photoUrl;
+    if (_selectedImage != null) {
+      photoUrl = await _uploadPhoto(_selectedImage!);
+    }
+
+    try {
+      await FirebaseFirestore.instance.collection('incidents').add({
+        'title': _titleController.text.trim(),
+        'description': _descriptionController.text.trim(),
+        'photoUrl': photoUrl ?? '',
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Report submitted successfully!')),
+      );
+
+      _titleController.clear();
+      _descriptionController.clear();
+      setState(() {
+        _selectedImage = null;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error submitting report: $e')),
+      );
+    } finally {
+      setState(() {
+        _isSubmitting = false;
       });
     }
   }
@@ -76,85 +91,43 @@ class _ReportScreenState extends State<ReportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Report Incident', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        title: const Text('Report Incident'),
         backgroundColor: Colors.redAccent,
-        foregroundColor: Colors.white,
       ),
-      body: SingleChildScrollView(
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Card(
-          elevation: 5,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Report an Incident',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.redAccent),
-                ),
-                const SizedBox(height: 20),
-                
-                // Title Input
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Title',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                ),
-                const SizedBox(height: 15),
-
-                // Description Input
-                TextField(
-                  maxLines: 5,
-                  decoration: InputDecoration(
-                    labelText: 'Description',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                // Image Preview (if selected)
-                if (_image != null)
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.file(_image!, height: 200, width: double.infinity, fit: BoxFit.cover),
-                  ),
-                const SizedBox(height: 15),
-
-                // Add Photo Button
-                OutlinedButton.icon(
-                  onPressed: _pickImage,
-                  icon: const Icon(Icons.camera_alt, color: Colors.redAccent),
-                  label: const Text('Add Photo'),
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Colors.redAccent),
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  ),
-                ),
-                const SizedBox(height: 25),
-
-                // Submit Report Button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Report Submitted Successfully')),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.redAccent,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    ),
-                    child: const Text('Submit Report', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  ),
-                ),
-              ],
-            ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: _titleController,
+                decoration: const InputDecoration(labelText: 'Title'),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _descriptionController,
+                decoration: const InputDecoration(labelText: 'Description'),
+                maxLines: 3,
+              ),
+              const SizedBox(height: 12),
+              if (_selectedImage != null)
+                Image.file(_selectedImage!, height: 150)
+              else
+                const Text('No photo selected'),
+              TextButton.icon(
+                onPressed: _pickImage,
+                icon: const Icon(Icons.photo),
+                label: const Text('Add Photo'),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _isSubmitting ? null : _submitReport,
+                child: _isSubmitting
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text('Submit Report'),
+              ),
+            ],
           ),
         ),
       ),

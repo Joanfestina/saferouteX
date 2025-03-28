@@ -4,6 +4,7 @@ import 'report_screen.dart';
 import 'resources.dart';
 import 'dashboard/user_dashboard.dart'; // Import UserDashboard
 import 'dashboard/authority_dashboard.dart'; // Import AuthorityDashboard
+import 'report_form.dart'; // Import ReportForm
 
 class HomeScreen extends StatefulWidget {
   final String userType; // Add userType parameter
@@ -58,11 +59,23 @@ class _HomeScreenState extends State<HomeScreen> {
           currentIndex: _selectedIndex,
           selectedItemColor: Colors.blueAccent,
           unselectedItemColor: Colors.grey,
-          onTap: _onItemTapped,
+          onTap: (index) {
+            if (index == 1) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ReportForm()),
+              );
+            } else {
+              setState(() {
+                _selectedIndex = index;
+              });
+            }
+          },
         ),
       ),
     );
   }
+
 
   Widget _buildFeatureCard(IconData icon, String title) {
     return Card(
