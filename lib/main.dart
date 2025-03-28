@@ -52,7 +52,7 @@ class _MainScreenState extends State<MainScreen> {
     const HomeScreen(userType: 'user'), // Pass userType to HomeScreen
     const ReportScreen(),
     const SosScreen(),
-    const ResourcesScreen(),
+    ResourcesScreen(),
     const MapScreen(), // Ensure this uses Flutter Map
   ];
 
@@ -91,3 +91,16 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 }
+// Navigator.push(
+//   context,
+//   MaterialPageRoute(builder: (context) => const AuthReportScreen()),
+// );
+
+// If needed, move this code into a valid method or function, such as:
+// void navigateToAuthReportScreen(BuildContext context) {
+//   Navigator.push(
+//     context,
+//     MaterialPageRoute(builder: (context) => const AuthReportScreen()),
+//   );
+// }
+
