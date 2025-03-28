@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:latlong2/latlong.dart';
-import '../../services/route_service.dart';
+import '../services/route_service.dart';
 
 class RouteSuggestionScreen extends StatelessWidget {
   const RouteSuggestionScreen({super.key});

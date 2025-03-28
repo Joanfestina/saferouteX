@@ -11,18 +11,10 @@ import './ui/screens/map_screen.dart'; // Ensure this is for Flutter Map, not Go
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  try {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-  } catch (e) {
-    debugPrint("Firebase initialization error: $e");
-  }
-
-  // Simulated userType variable
-  String userType = 'user'; // Change this to 'authority' to simulate authority user
-
-  runApp(SafeRouteXApp(userType: userType));
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const SafeRouteXApp(userType: 'user')); // Provide a default userType
 }
 
 class SafeRouteXApp extends StatelessWidget {

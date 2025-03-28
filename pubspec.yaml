@@ -20,16 +20,25 @@ dependencies:
   latlong2: ^0.9.0
   flutter_map_marker_popup: ^5.2.0
   firebase_storage: ^12.4.4
+<<<<<<< HEAD
+=======
+  file_picker: ^8.0.0
+>>>>>>> 1a12914624269ef82cfeec3aa2e93a577bf47461
   cupertino_icons: ^1.0.8
 
   geolocator: ^10.0.0
   geocoding: ^3.0.0
+<<<<<<< HEAD
   url_launcher: ^6.3.1
+=======
+  image_picker: ^0.8.7+4
+>>>>>>> 1a12914624269ef82cfeec3aa2e93a577bf47461
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  flutterfire_cli: ^0.1.1+2
 
 flutter:
   uses-material-design: true

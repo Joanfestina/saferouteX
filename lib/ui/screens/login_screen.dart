@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './home_scren.dart'; // Import HomeScreen
+import './sign_in_screen.dart'; // Import SignInScreen
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -48,54 +49,109 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
+      SnackBar(content: Text(message, style: const TextStyle(color: Colors.white)), backgroundColor: Colors.red),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(32.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('SafeRouteX', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 40),
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
-              keyboardType: TextInputType.emailAddress,
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            const SizedBox(height: 24),
-            DropdownButton<String>(
-              value: _selectedRole,
-              onChanged: (String? newValue) {
-                setState(() {
-                  _selectedRole = newValue!;
-                });
-              },
-              items: <String>['User', 'Authority']
-                  .map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _loginWithEmailPassword,
-              style: ElevatedButton.styleFrom(minimumSize: const Size(double.infinity, 50)),
-              child: const Text('Login'),
-            ),
-          ],
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                'SafeRouteX',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.blueAccent),
+              ),
+              const SizedBox(height: 40),
+              
+              // Email Input
+              TextField(
+                controller: _emailController,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  prefixIcon: const Icon(Icons.email, color: Colors.blueAccent),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                keyboardType: TextInputType.emailAddress,
+              ),
+              const SizedBox(height: 12),
+              
+              // Password Input
+              TextField(
+                controller: _passwordController,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  prefixIcon: const Icon(Icons.lock, color: Colors.blueAccent),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                obscureText: true,
+              ),
+              const SizedBox(height: 24),
+
+              // Dropdown with better styling
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.blueAccent, width: 2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: _selectedRole,
+                    isExpanded: true,
+                    icon: const Icon(Icons.arrow_drop_down, color: Colors.blueAccent),
+                    items: ['User', 'Authority'].map((String role) {
+                      return DropdownMenuItem<String>(
+                        value: role,
+                        child: Text(role, style: const TextStyle(fontSize: 16)),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedRole = newValue!;
+                      });
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Login Button
+              ElevatedButton(
+                onPressed: _loginWithEmailPassword,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueAccent,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                child: const Text('Login', style: TextStyle(fontSize: 18)),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Sign Up Option
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SignInScreen()), // Navigate to SignInScreen
+                  );
+                },
+                child: const Text(
+                  "New User? Sign Up",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16, color: Colors.blueAccent, fontWeight: FontWeight.w500),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

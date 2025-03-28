@@ -1,10 +1,14 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:latlong2/latlong.dart';
+<<<<<<< HEAD:lib/services/route_service.dart
 import '../services/constants.dart';
 import '../../services/route_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+=======
+import 'constants.dart';
+>>>>>>> 1a12914624269ef82cfeec3aa2e93a577bf47461:lib/ui/services/route_service.dart
 
 class RouteService {
   final String apiKey = ORS_API_KEY;

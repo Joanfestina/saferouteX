@@ -1,32 +1,24 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  // Sign in with email and password
-  Future<User?> signInWithEmailPassword(String email, String password) async {
+  Future<String?> signUpWithEmailPassword(String name, String email, String password) async {
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      return userCredential.user;
+      // Save user credentials to the database or authentication service
+      // Example for Firebase:
+      // await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+      // Save additional user details (e.g., name) to Firestore or Realtime Database
+      return "User registered successfully!";
     } catch (e) {
-      print("Login error: $e");
-      return null;
+      return e.toString(); // Return error message
     }
   }
 
-  // Fetch user role from Firestore
-  Future<String?> getUserRole(String uid) async {
+  Future<String?> signInWithEmailPassword(String email, String password) async {
     try {
-      DocumentSnapshot doc = await _firestore.collection('users').doc(uid).get();
-      return doc['role'];
+      // Validate user credentials
+      // Example for Firebase:
+      // await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+      return "Login successful!";
     } catch (e) {
-      print("Error fetching user role: $e");
-      return null;
+      return "Invalid email or password"; // Return user-friendly error
     }
   }
 }
